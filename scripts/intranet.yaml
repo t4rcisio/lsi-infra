@@ -1,0 +1,8 @@
+ethernets:
+### WAN INTERFACE bonding_masters STATIC
+	bonding_masters:
+		addresses:
+			- 10.0.10.1/24
+### WAN INTERFACE eth0 DHCP
+	eth0:
+		dhcp4: yes
