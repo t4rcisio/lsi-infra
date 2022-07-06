@@ -137,7 +137,7 @@ for interface in interfaces:
         config = {interface:{'dhcp4': '''yes'''}}
         nodes.append(config)
 
-yaml_config = [{'network':{'version': 2,'renderer': 'networkd', 'ethernets': nodes}}]
+yaml_config = {'network':{'version': 2,'renderer': 'networkd', 'ethernets': nodes}}
 yaml_file = yaml.safe_dump(yaml_config, file, default_style=None)
 file.close()
 

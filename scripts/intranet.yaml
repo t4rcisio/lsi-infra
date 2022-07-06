@@ -1,9 +1,9 @@
-- network:
-    ethernets:
-    - bonding_masters:
-        dhcp4: 'yes'
-    - eth0:
-        addresses:
-        - 10.0.10.1/24
-    renderer: networkd
-    version: 2
+network:
+  ethernets:
+  - bonding_masters:
+      dhcp4: 'yes'
+  - eth0:
+      addresses:
+      - 10.0.10.1/24
+  renderer: networkd
+  version: 2
