@@ -124,21 +124,24 @@ router = interfaces[index]
 print(color.BLUE + "\tGENERATING FILE CONFIGUARTION\n")
 file = open(file_name, "w")
 
-nodes = []
+nodes = {}
 
 ## GERA O ARQUIVO DE CONFIGURAÇÃO
 index = 0
 for interface in interfaces:
     
     if(interface == router):
-       config = {interface:{'addresses': [DEFAULT_ADDRESS]}}
-       nodes.append(config)
+       config = {'addresses': [DEFAULT_ADDRESS]}
+       nodes[interface] = config
     else:
-        config = {interface:{'dhcp4': '''yes'''}}
-        nodes.append(config)
+        config = {'dhcp4': '''yes'''}
+        nodes[interface] = config
+
 
 yaml_config = {'network':{'version': 2,'renderer': 'networkd', 'ethernets': nodes}}
-yaml_file = yaml.safe_dump(yaml_config, file, default_style=None)
+yaml_file = yaml.safe_dump(yaml_config, file)
+
+
 file.close()
 
 teste = input()
