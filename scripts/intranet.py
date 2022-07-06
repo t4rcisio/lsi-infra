@@ -203,12 +203,12 @@ if(check_out != "net.ipv4.ip_forward=1\n"):
     exit(0)
 
 
-cmd_i_iptables = "apt-get install iptables-persistent -y"
+cmd_i_iptables = " yes Y | apt-get install iptables-persistent"
 ipt_done, ipt_err = runCommand(cmd_i_iptables)
 
 if(ipt_err !=""):
-    runCommand("apt-get update -y")
-    runCommand("apt-get upgrade -y")
+    runCommand("yes Y | apt-get update")
+    runCommand("yes Y | apt-get upgrade")
     ipt_done, ipt_err = runCommand(cmd_i_iptables)
 
 
