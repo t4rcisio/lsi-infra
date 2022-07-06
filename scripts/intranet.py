@@ -35,6 +35,7 @@ yaml_DHCP= '''
 
 def runCommand(command_in):
     cmd_run = command_in
+    print(f"DEBUG:\n Running <{command_in}>")
     proccess =  subprocess.Popen(cmd_run, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     cmd_out, cmd_err = proccess.communicate()
 
