@@ -1,5 +1,6 @@
 import os
 import subprocess
+import yaml
 
 
 DEFAULT_ADDRESS = "10.0.10.1/24"
@@ -13,6 +14,22 @@ class color:
     ORANGE='\033[0;33m'
     BLUE='\033[94m'
     LGREEN='\033[1;32m'
+
+yaml_Static = '''
+### WAN INTERFACE {interface} STATIC
+ {interface}:
+  addresses:
+   - {DEFAULT_ADDRESS}
+
+'''
+
+yaml_DHCP= '''
+### WAN INTERFACE {interface} DHCP
+ {interface}:
+  dhcp4: yes
+'''
+
+
 
 
 
@@ -106,23 +123,25 @@ router = interfaces[index]
 
 print(color.BLUE + "\tGENERATING FILE CONFIGUARTION\n")
 file = open(file_name, "w")
-file.write("ethernets:\n")
+
+nodes = []
 
 ## GERA O ARQUIVO DE CONFIGURAÇÃO
 index = 0
 for interface in interfaces:
     
     if(interface == router):
-        file.write(f"### WAN INTERFACE {interface} STATIC\n")
-        file.write("\t"+interface+":\n")
-        file.write("\t\taddresses:\n")
-        file.write(f"\t\t\t- {DEFAULT_ADDRESS}\n")
+       config = {interface:{'addresses': [DEFAULT_ADDRESS]}}
+       nodes.append(config)
     else:
-        file.write(f"### WAN INTERFACE {interface} DHCP\n")
-        file.write("\t"+interface+":\n")
-        file.write("\t\tdhcp4: yes\n")
+        config = {interface:{'dhcp4': '''yes'''}}
+        nodes.append(config)
 
+yaml_config = [{'network':{'version': 2,'renderer': 'networkd', 'ethernets': nodes}}]
+yaml_file = yaml.safe_dump(yaml_config, file, default_style=None)
+file.close()
 
+teste = input()
 ## COPIA O ARQUIVO PARA A PATA DETINO
 cmd_cp = f"cp {file_name} /etc/netplan/ "
 cp_out, cp_err = runCommand(cmd_cp)
@@ -140,7 +159,7 @@ if(not done):
      exit(0)
 
 
-cmd_np = f"netplay apply "
+cmd_np = f"netplan apply "
 np_out, np_err = runCommand(cmd_np)
 
 
@@ -158,11 +177,58 @@ if(not response):
     exit(0)
 
 
+print(color.BLUE + "\tTESTING CONNECTION\n")
+cmd_dns = "ping 8.8.8.8 -c 5"
+dns_out, dns_err = runCommand(cmd_dns)
+
+print(dns_out)
+
+print(color.BLUE + "\tENABLE IPV4 FORWARDING\n")
+cmd_ip4="sysctl -w net.ipv4.ip_forward=1"
+runCommand(cmd_ip4)
+
+cmd_ip4_appy = "sysctl -p"
+runCommand(cmd_ip4_appy)
 
 
+cmd_ip4_check = "cat /proc/sys/net/ipv4/ip_forward"
+check_out, check_err = runCommand(cmd_ip4_check)
+
+if(not check_out):
+    print(color.RED+ "\tFAIL TO CHANGE IPV4 FORWARDING, TRY : sysctl -w net.ipv4.ip_forward=1\n")
+    exit(0)
 
 
+cmd_i_iptables = "apt-get install iptables-persistent -y"
+ipt_done, ipt_err = runCommand(cmd_i_iptables)
+
+if(ipt_err !=""):
+    runCommand("apt-get update -y")
+    runCommand("apt-get upgrade -y")
+    ipt_done, ipt_err = runCommand(cmd_i_iptables)
 
 
+if(ipt_err !=""):
+    print(color.RED + "\tFAIL TO INSTALL "+color.RED+"iptables-persistent\n")
+    exit(0)
 
+
+print(color.BLUE + "\tCONFIGURE IPTABLES\n")
+cmd_ipt_0 = "iptables -t nat -A POSTROUTING -j MASQUERADE"
+ipt_done, ipt_err = runCommand(cmd_ipt_0)
+
+if(ipt_err !=""):
+    print(color.RED + f"\tFAIL TO CONFIGURE IPTABLE: $ {cmd_ipt_0}\n")
+    exit(0)
+
+print(color.BLUE + "\tSAVE IPTABLES\n")
+cmd_ipt_save = "iptables-save > /etc/iptables/rules.v4"
+ipt_done, ipt_err = runCommand(cmd_ipt_save)
+
+if(ipt_err !=""):
+    print(color.RED + f"\tFAIL TO CONFIGURE IPTABLE: $ {cmd_ipt_save}\n")
+    exit(0)
+
+
+print(color.BLUE + f"\tALL DONE!\n")
 
