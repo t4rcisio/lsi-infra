@@ -3,7 +3,7 @@ import subprocess
 import yaml
 
 
-DEFAULT_ADDRESS = "10.0.10.1/24"
+DEFAULT_ADDRESS = "10.10.10.1/24"
 
 class output_elements:
     ROW="---------------------------------------------------\n"
@@ -187,7 +187,7 @@ dns_out, dns_err = runCommand(cmd_dns)
 print(dns_out)
 
 print(color.BLUE + "\tENABLE IPV4 FORWARDING\n")
-cmd_ip4="sysctl -w net.ipv4.ip_forward=1"
+cmd_ip4="echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf"
 runCommand(cmd_ip4)
 
 cmd_ip4_appy = "sysctl -p"
