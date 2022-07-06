@@ -197,7 +197,7 @@ runCommand(cmd_ip4_appy)
 cmd_ip4_check = "tail -n 1 /etc/sysctl.conf"
 check_out, check_err = runCommand(cmd_ip4_check)
 
-if(check_out != "net.ipv4.ip_forward=1"):
+if(check_out != "net.ipv4.ip_forward=1\n"):
     print(color.RED+ "\tFAIL TO CHANGE IPV4 FORWARDING, TRY : add net.ipv4.ip_forward=1 on /etc/sysctl.conf\n")
     exit(0)
 
