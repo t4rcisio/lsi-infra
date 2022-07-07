@@ -44,7 +44,7 @@ def animation():
 
 
 def runCommand(command_in):
-    cmd_run = "yes y | "+command_in
+    cmd_run = "yes "" | "+command_in
     print(f"DEBUG:\n Running <{command_in}>")
     sleep(2)
     proccess =  subprocess.Popen(cmd_run, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE,)
