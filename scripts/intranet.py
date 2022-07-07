@@ -49,7 +49,8 @@ def runCommand(command_in):
     sleep(2)
     proccess =  subprocess.Popen(cmd_run, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE,)
     cmd_out, cmd_err = proccess.communicate()
-    if(command_in != "apt-get upgrade"):
+    
+    if(command_in != "yes Y | apt-get upgrade"):
         cmd_out = cmd_out.decode('ascii')
         cmd_err = cmd_err.decode('ascii')
     return cmd_out, cmd_err
