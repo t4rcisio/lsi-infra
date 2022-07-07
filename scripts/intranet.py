@@ -2,6 +2,7 @@ import os
 import subprocess
 from time import sleep
 import yaml
+import time
 
 
 DEFAULT_ADDRESS = "10.10.10.1/24"
@@ -30,7 +31,15 @@ yaml_DHCP= '''
   dhcp4: yes
 '''
 
+process_status = 0
 
+def animation():
+    animation = "|/-\\"
+    idx = 0
+    while  not process_status:
+        print(animation[idx % len(animation)], end="\r")
+        idx += 1
+        time.sleep(0.1)
 
 
 
@@ -38,12 +47,11 @@ def runCommand(command_in):
     cmd_run = command_in
     print(f"DEBUG:\n Running <{command_in}>")
     sleep(2)
-    proccess =  subprocess.Popen(cmd_run, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    proccess =  subprocess.Popen(cmd_run, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE,)
     cmd_out, cmd_err = proccess.communicate()
-
-    cmd_out = cmd_out.decode('ascii')
-    cmd_err = cmd_err.decode('ascii')
-
+    if(command_in != "apt-get upgrade"):
+        cmd_out = cmd_out.decode('ascii')
+        cmd_err = cmd_err.decode('ascii')
     return cmd_out, cmd_err
 
 
