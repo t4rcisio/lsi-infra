@@ -219,7 +219,7 @@ if(check_out != "net.ipv4.ip_forward=1\n"):
     exit(0)
 
 
-cmd_i_iptables = "yes 'yes' 'yes'  | apt-get remove iptables-persistent"
+cmd_i_iptables = "yes 'yes' 'yes'  | apt-get install iptables-persistent"
 ipt_done, ipt_err = runCommand(cmd_i_iptables)
 
 if(ipt_err !=""):
