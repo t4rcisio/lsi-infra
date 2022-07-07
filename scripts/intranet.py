@@ -44,7 +44,7 @@ def animation():
 
 
 def runCommand(command_in):
-    cmd_run = "yes "" | "+command_in
+    cmd_run = command_in
     print(f"DEBUG:\n Running <{command_in}>")
     sleep(2)
     proccess =  subprocess.Popen(cmd_run, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE,)
@@ -85,8 +85,8 @@ def showInterfaces(interfaces):
         index +=1
 
 def updateSys():
-    runCommand("apt-get update")
-    runCommand("apt-get upgrade")
+    runCommand("yes y |apt-get update")
+    runCommand("yes y |apt-get upgrade")
 
 sudoCheck()
 
@@ -219,7 +219,7 @@ if(check_out != "net.ipv4.ip_forward=1\n"):
     exit(0)
 
 
-cmd_i_iptables = "apt-get install iptables-persistent -y"
+cmd_i_iptables = "yes 'yes' 'yes'  | apt-get remove iptables-persistent"
 ipt_done, ipt_err = runCommand(cmd_i_iptables)
 
 if(ipt_err !=""):
