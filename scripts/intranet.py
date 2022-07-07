@@ -44,12 +44,12 @@ def animation():
 
 
 def runCommand(command_in):
-    cmd_run = command_in
+    cmd_run = "yes y | "+command_in
     print(f"DEBUG:\n Running <{command_in}>")
     sleep(2)
     proccess =  subprocess.Popen(cmd_run, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE,)
     cmd_out, cmd_err = proccess.communicate()
-    
+
     if(command_in != "yes Y | apt-get upgrade"):
         cmd_out = cmd_out.decode('ascii')
         cmd_err = cmd_err.decode('ascii')
@@ -85,8 +85,8 @@ def showInterfaces(interfaces):
         index +=1
 
 def updateSys():
-    runCommand("yes Y | apt-get update")
-    runCommand("yes Y | apt-get upgrade")
+    runCommand("apt-get update")
+    runCommand("apt-get upgrade")
 
 sudoCheck()
 
@@ -219,7 +219,7 @@ if(check_out != "net.ipv4.ip_forward=1\n"):
     exit(0)
 
 
-cmd_i_iptables = "yes Y | apt-get install iptables-persistent -y"
+cmd_i_iptables = "apt-get install iptables-persistent -y"
 ipt_done, ipt_err = runCommand(cmd_i_iptables)
 
 if(ipt_err !=""):
