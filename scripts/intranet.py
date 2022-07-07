@@ -37,6 +37,7 @@ yaml_DHCP= '''
 def runCommand(command_in):
     cmd_run = command_in
     print(f"DEBUG:\n Running <{command_in}>")
+    sleep(2)
     proccess =  subprocess.Popen(cmd_run, shell=True, stdin=None, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     cmd_out, cmd_err = proccess.communicate()
 
@@ -152,7 +153,6 @@ yaml_file = yaml.safe_dump(yaml_config, file)
 
 file.close()
 
-teste = input()
 ## COPIA O ARQUIVO PARA A PATA DETINO
 cmd_cp = f"cp {file_name} /etc/netplan/ "
 cp_out, cp_err = runCommand(cmd_cp)
@@ -210,7 +210,7 @@ if(check_out != "net.ipv4.ip_forward=1\n"):
     exit(0)
 
 
-cmd_i_iptables = " yes Y | apt-get install iptables-persistent -y"
+cmd_i_iptables = "yes Y | apt-get install iptables-persistent -y"
 ipt_done, ipt_err = runCommand(cmd_i_iptables)
 
 if(ipt_err !=""):
