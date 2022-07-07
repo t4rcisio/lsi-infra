@@ -1,5 +1,6 @@
 import os
 import subprocess
+from time import sleep
 import yaml
 
 
@@ -234,5 +235,22 @@ if(ipt_err !=""):
     exit(0)
 
 
+cmd_dns_0 =  'rm -f /etc/resolv.conf'
+runCommand(cmd_dns_0)
+sleep(3)
+cmd_dns_1 = 'ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf'
+runCommand(cmd_dns_1)
+
+
+print(color.BLUE + "\tTESTING CONNECTION\n")
+cmd_dns = "ping google.com -c 5"
+dns_out, dns_err = runCommand(cmd_dns)
+print(dns_out)
+
 print(color.BLUE + f"\tALL DONE!\n")
+
+print(color.RED + f"\tRESTARTING...!\n")
+
+runCommand("reboot")
+
 
