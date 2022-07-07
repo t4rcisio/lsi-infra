@@ -74,13 +74,19 @@ def showInterfaces(interfaces):
         print(f"{color.LGREEN}[{index}] {interface}\n\n IP ADDRESS: {color.BLUE}{address}")
         index +=1
 
-
+def updateSys():
+    runCommand("yes Y | apt-get update")
+    runCommand("yes Y | apt-get upgrade")
 
 sudoCheck()
 
 file_name = "intranet.yaml"
 cmd_delete = f"rm {file_name}"
 runCommand(cmd_delete)
+
+updateSys()
+
+
 
 print(color.RED + output_elements.ROW + color.BLUE + "\t\tLSI - CEFET-MG")
 print(color.RED + output_elements.ROW + color.BLUE + "\tCONFIGURING NETWORKING INTERFACE\n" + color.RED + output_elements.ROW )
@@ -204,12 +210,11 @@ if(check_out != "net.ipv4.ip_forward=1\n"):
     exit(0)
 
 
-cmd_i_iptables = " yes Y | apt-get install iptables-persistent"
+cmd_i_iptables = " yes Y | apt-get install iptables-persistent -y"
 ipt_done, ipt_err = runCommand(cmd_i_iptables)
 
 if(ipt_err !=""):
-    runCommand("yes Y | apt-get update")
-    runCommand("yes Y | apt-get upgrade")
+    updateSys()
     ipt_done, ipt_err = runCommand(cmd_i_iptables)
 
 
