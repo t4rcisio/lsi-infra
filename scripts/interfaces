@@ -1,3 +1,2 @@
-
 bonding_masters
-eth0
+10.10.10.1/24

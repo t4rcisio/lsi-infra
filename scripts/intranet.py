@@ -17,20 +17,6 @@ class color:
     BLUE='\033[94m'
     LGREEN='\033[1;32m'
 
-yaml_Static = '''
-### WAN INTERFACE {interface} STATIC
- {interface}:
-  addresses:
-   - {DEFAULT_ADDRESS}
-
-'''
-
-yaml_DHCP= '''
-### WAN INTERFACE {interface} DHCP
- {interface}:
-  dhcp4: yes
-'''
-
 process_status = 0
 
 def animation():
@@ -66,6 +52,14 @@ def sudoCheck():
     else:
         cmd_su = "rm /etc/__rootAccess__"
         runCommand(cmd_su)
+
+def salveDefaultInterface(interface):
+    file = open("interfaces", "w")
+
+    file.write(interface+"\n")
+    file.write(DEFAULT_ADDRESS)
+
+    file.close()
 
 def showInterfaces(interfaces):
     index=0
@@ -138,6 +132,9 @@ if(index < 0 or index > len(interfaces)):
     exit(0)
 
 router = interfaces[index]
+salveDefaultInterface(router)
+
+
 
 print(color.BLUE + "\tGENERATING FILE CONFIGUARTION\n")
 file = open(file_name, "w")
