@@ -10,7 +10,7 @@
       - preprod
       - prod
     conf_file: intranet.yml
-    expl_file: intranet.yml.example
+    expl_file: model/intranet.yml.example
 
   vars_prompt:
 
@@ -105,4 +105,4 @@
       shell: rm -f {{conf_file}}
 
     - name:
-      debug: msg="\t \t YOU MUST REBOOT SYSTEM TO APPLY CONFIGURATION"
+      debug: msg="YOU MUST REBOOT SYSTEM TO APPLY CONFIGURATION"
