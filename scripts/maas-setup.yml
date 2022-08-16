@@ -15,4 +15,10 @@
         cache_valid_time: 8640
 
     - name:  REMOVING OLD VERSIONS
-      shell: yes 'yes' | apt-get purge maas ; sudo apt-get autoremove
+      shell: snap remove maas
+
+    - name:  
+      shell: yes "yes" | apt-get remove maas
+
+    - name:  INSTALLING MAAS
+      shell: snap install maas
