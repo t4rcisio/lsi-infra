@@ -1,11 +1,11 @@
 network:
   ethernets:
   # INTRANET INTERFACE 
-    bonding_masters:
+    intranet_interface:
       addresses:
-      - 10.10.10.1/24
+      - intranet_ip
   # INTERFACE DHCP
-    eth0:
+    dhcp_interface:
       dhcp4: 'yes'
   renderer: networkd
   version: 2

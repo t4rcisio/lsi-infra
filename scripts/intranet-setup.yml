@@ -10,15 +10,16 @@
       - preprod
       - prod
     conf_file: intranet.yml
+    expl_file: intranet.yml.example
 
   vars_prompt:
 
     - name: interface
-      prompt: Type interface to configure? To see available interfaces, run "ip a"
+      prompt: Interface to configure. To see available interfaces, run "ip a"
       private: no
 
     - name: ip_address
-      prompt: Type IP address to fix on interface. Example 10.10.10.1/24 or 192.168.256.100/32
+      prompt: IP address to fix on interface. Example 10.10.10.1/24 or 192.168.256.100/32
       private: no
   
   pre_tasks:
@@ -51,6 +52,9 @@
     - name:
       set_fact:
         interfaces_list: "{{interface_DHCP.stdout}}"
+
+    - name: GENERATE CONFIG INTERFACES FILE
+      shell: cp {{expl_file}} {{conf_file}}
       
     - name: "SAVE CONFIG TO {{conf_file}}"
       ansible.builtin.replace:
@@ -69,3 +73,36 @@
         path: "{{conf_file}}"
         regexp: "dhcp_interface"
         replace: "{{interfaces_list}}"
+
+    - name: COPY FILE CONFIG TO /etc/netplan
+      shell: cp {{conf_file}} /etc/netplan
+
+    - name: APPLY CONFIG FROM /etc/netplan/intranet.yml
+      shell: netplay apply
+
+    - name: ENABLE IPV4 FORWARD 
+      shell: echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
+
+    - name: INSTALL IPTABLES
+      shell: yes 'yes' 'yes'  | apt-get install iptables-persistent
+    
+    - name: SETING IPTABLES CONFIG
+      shell: iptables -t nat -A POSTROUTING -j MASQUERADE
+
+    - name: APPLY IPTABLES CONFIG
+      shell: iptables-save > /etc/iptables/rules.v4
+
+    - name: REMOVE OLD FILE FROM DNS CONFIG
+      shell: rm -f /etc/resolv.conf
+
+    - name: SETING NEW DNS FILE CONFIG
+      shell: ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf
+
+    - name: PING TEST - ping google.com -c 5
+      shell: ping google.com -c 5
+
+    - name: REMOVING TEMP FILES
+      shell: rm -f {{conf_file}}
+
+    - name:
+      debug: msg="\t \t YOU MUST REBOOT SYSTEM TO APPLY CONFIGURATION"
