@@ -15,4 +15,4 @@
         cache_valid_time: 8640
 
     - name:  REMOVING OLD VERSIONS
-      shell: apt-get purge maas maas-cli maas-cluster-controller  maas-common maas-dhcp maas-dns maas-region-controller python-django-maas python-maas-client python-maas-provisioningserver ; apt-get autoremove
+      shell: yes 'yes' | apt-get purge maas maas-cli maas-cluster-controller  maas-common maas-dhcp maas-dns maas-region-controller python-django-maas python-maas-client python-maas-provisioningserver ; apt-get autoremove
