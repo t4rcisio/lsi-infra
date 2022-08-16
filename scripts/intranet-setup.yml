@@ -1,0 +1,71 @@
+---
+- name: SETUP NETWORK TO CONFIG INTRANET
+  hosts: localhost
+  connection: local
+  become: yes                                 # Habilita o super usuario
+
+  vars:
+    _allowed_envs:
+      - dev
+      - preprod
+      - prod
+    conf_file: intranet.yml
+
+  vars_prompt:
+
+    - name: interface
+      prompt: Type interface to configure? To see available interfaces, run "ip a"
+      private: no
+
+    - name: ip_address
+      prompt: Type IP address to fix on interface. Example 10.10.10.1/24 or 192.168.256.100/32
+      private: no
+  
+  pre_tasks:
+    - name: Make sure ip_address is valid
+      fail:
+        msg: >-
+          Interface isn't formated correctly. Example 10.10.10.1/24 or 192.168.256.100/32
+      when: not ip_address is regex('^((?:[0-9]{1,3}\.){3}[0-9]{1,3})(?:/[0-9]{2})$')
+      run_once: true
+
+  tasks:
+    - name: UPDATE SYSTEM
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 8640
+    
+    - name: SET DEFAULT INTERFACE
+      set_fact:
+        default_interface: "{{interface}}"
+    
+    - name: SET DEFAULT IP
+      set_fact:
+        default_ip: "{{ip_address}}"
+  
+    - name: GETING INTERFACES
+      shell: ls -l /sys/class/net/ | grep -v virtual | awk -F " " '{print $9}' | sed 's/{{default_interface}}//' | sed '/^[[:space:]]*$/d' 
+      register: interface_DHCP
+
+    - name:
+      set_fact:
+        interfaces_list: "{{interface_DHCP.stdout}}"
+      
+    - name: "SAVE CONFIG TO {{conf_file}}"
+      ansible.builtin.replace:
+        path: "{{conf_file}}"
+        regexp: "intranet_interface"
+        replace: "{{default_interface}}"
+
+    - name: 
+      ansible.builtin.replace:
+        path: "{{conf_file}}"
+        regexp: "intranet_ip"
+        replace: "{{default_ip}}"
+
+    - name: 
+      ansible.builtin.replace:
+        path: "{{conf_file}}"
+        regexp: "dhcp_interface"
+        replace: "{{interfaces_list}}"

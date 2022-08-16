@@ -1,8 +1,10 @@
 network:
   ethernets:
+  # INTRANET INTERFACE 
     bonding_masters:
       addresses:
       - 10.10.10.1/24
+  # INTERFACE DHCP
     eth0:
       dhcp4: 'yes'
   renderer: networkd
