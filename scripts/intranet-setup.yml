@@ -78,7 +78,7 @@
       shell: cp {{conf_file}} /etc/netplan
 
     - name: APPLY CONFIG FROM /etc/netplan/intranet.yml
-      shell: netplay apply
+      shell: netplan apply
 
     - name: ENABLE IPV4 FORWARD 
       shell: echo 'net.ipv4.ip_forward=1' >> /etc/sysctl.conf
